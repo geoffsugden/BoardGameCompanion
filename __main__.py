@@ -14,6 +14,7 @@ SUPPORTED_COMMANDS = [
     ('quit', 'Exits the session.'),
     ('help', 'Provides information on use of interface.'),
     ('play', 'When followed by a game id launchs the companion app for that game. e.g. ''play gbg'''),
+    ('load', 'When followed by a game id allows the user to select a previously played game. e.g. ''play gbg'''),
     ('desc', 'When followed by a game id displays additoinal information for that game. e.g. ''play gbg''')
 ]
 
@@ -48,11 +49,12 @@ for key, game in games.items():
     print(f'ID:{key}')
     print()
 
+BG = None
+command = None
 # The below  currently relys on 4 letter codes to allow the user to perform functions. 
 while True:   
     module = None
-    bg_class = None
-    command = None
+    bg_class = None   
     game_str = None
     game = None
     ipt = input('Enter command or ''help'' for assistance: ').split(' ', 1)
@@ -83,8 +85,17 @@ while True:
                 print('Please enter ''desc'' followed by the game id.')
         case 'play':
             if game:
-                module = game.get('module')
-                bg_class = game.get('class')
+                BG_mod = import_module(game.get('module'))
+                cls = getattr(BG_mod, game.get('class'))
+                BG = cls()
+                break
+            else:
+                print('Please enter ''play'' followed by the game id.')
+        case 'load':
+            if game:
+                BG_mod = import_module(game.get('module'))
+                cls = getattr(BG_mod, game.get('class'))
+                BG = cls()
                 break
             else:
                 print('Please enter ''play'' followed by the game id.')
@@ -98,15 +109,6 @@ while True:
                 #print(a)
             print()
 
-    
-if not module:
-    print('Goodbye')
-    exit()
-
-BG_mod = import_module(module)
-cls = getattr(BG_mod, bg_class)
-BG = cls()
-
 playing_game = f'Playing {BG.name}'
 
 for i in range(len(playing_game)):
@@ -117,28 +119,31 @@ for i in range(len(playing_game)):
 print()
 
 config = load_config()
-savefile = game.get('save_file')
-#Create the directory if it doesn't exist
-savedir = Path.home() / config['save_path'].lstrip('\\/') / savefile
-
+save_file_name = game.get('save_file')
+#Make sure that the directory exists for save files
+savedir = Path.home() / Path(config['save_path'].lstrip('\\/')) / Path(save_file_name)
 savedir.parent.mkdir(parents=True, exist_ok=True)
 
-
-
+save_file = {}
 if savedir.is_file():
-    print('exists')
-else:
-    with savedir.open('w') as f:
-        yaml.safe_dump({},f)
+    with savedir.open('r') as f:
+        save_file = yaml.safe_load(f) or {}
 
-print(savedir)
-print(savedir.is_file())
+if command == 'load':
+    for key in save_file:
+        print(f'Game id = {key}, Players are:')
+        players = save_file[key]['players']
+        for player in players:
+            print(f'\tPlayer {player}: {players[player]}')
+    input('Enter game id: ')
+# TODO implment load_game method in Board Game
+elif command == 'play':
+    print("About to set up the game...")
+    # Hand off the rest to the individual board game class, plus the interface that is 
+    BG.setup_game(save_file)
 
+with savedir.open('w') as f:
+    yaml.safe_dump(save_file, f)
 
-    
-
-
-# Hand off the rest to the individual board game class, plus the interface that is 
-BG.setup_game(savedir)
-
+print("Finished setting up the game.")
 
