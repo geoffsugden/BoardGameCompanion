@@ -1,5 +1,6 @@
 ## Base module that should cover most board games. Designed to be extensible and cover cases for most games
 import random
+from inflect import engine
 
 class Player:
     ## A player in a board game. Players have a name and a score
@@ -26,9 +27,11 @@ class BoardGame:
     ## Base class for a board game. Allows for a board game with players up to a max limit
 
     def __init__(self, max_players=4, player_type='player', name="Board Game"):
+        p = engine()
         self.name = name
         self.player_limit = max_players
         self.player_type = player_type
+        self.player_types = p.plural(player_type)
         self.players = []
         self.shuffled_players = []
 
@@ -47,6 +50,35 @@ class BoardGame:
     def set_player_order(self):
         self.shuffled_players = self.players.copy()
         random.shuffle(self.shuffled_players)
+
+    def setup_game_cli(self, game_file):
+        #add players 
+        print(f'When finished adding {self.player_types.capitalize()} press Enter key')
+        for i in range(self.player_limit):
+            print(f'Enter {self.player_type.capitalize()} name: ', end='')
+            name = input()
+            if not name.strip():
+                break
+            else:
+                self.add_player(name)
+            
+
+        #sort player order
+
+        #return game file details
+
+        #return player order
+        
+        for i, player in enumerate(self.get_player_order(), start=1):
+            print(f'Player {i} is {player}')
+
+
+    def setup_game(self, game_file, interface='cli'):
+        # Create a class that directly access the interface. This allows for the complexities of individual games to be dealt with. 
+        self.setup_game_cli(game_file)
+
+    
+
 
     def __repr__(self):
         return f'<Boardgame name={self.name} max_players={self.max_players} player_type={self.player_type} players=({[p.name for p in self.players]})'

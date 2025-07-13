@@ -3,6 +3,7 @@ board_games:
       name: "Board Game"
       class: "BoardGame"
       module: "games.generic_board_game"
+      save_file: "generic_board_game.yaml"
       description: "Generic board game template. Used for games that do not have a specific implementation. Provides player order and ability to enter scores. "
       expansions: []
 
@@ -10,6 +11,7 @@ board_games:
       name: "Caverna"
       class: "Caverna"
       module: "games.caverna"
+      save_file: "caverna.yaml"
       description: "Caverna: The Cave Farmers is a worker-placement game by Uwe Rosenberg."
       expansions:
         - "The Forgotten Folk"
@@ -18,6 +20,7 @@ board_games:
       name: "Caverna: The Forgotten Folk"
       class: "Caverna_FF"
       module: "games.caverna_ff"
+      save_file: "caverna_ff.yaml"
       description: "An expansion to Caverna adding asymmetric player powers and fantasy races."
       base_game: "caverna"
       expansions: []
@@ -26,6 +29,7 @@ board_games:
       name: "Wingspan"
       class: "Wingspan"
       module: "games.wingspan"
+      save_file: "wingspan.yaml"
       description: "A game about birds"
       expansions: 
         - "Asia"
@@ -36,5 +40,6 @@ board_games:
       name: "Gaia Project"
       class: "Wingspan"
       module: "games.gaia_project"
+      save_file: "gaia.yaml"
       description: "A game about space exploration"
       expansions: []

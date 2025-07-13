@@ -4,6 +4,7 @@
 
 import yaml
 from importlib import import_module
+from pathlib import Path
 
 # Defines a list of supported commands that can be used when editing via the CLI (yes I really need to decouple interface.)
 # Stored as a tuple ([command],[description]). 
@@ -27,10 +28,14 @@ print('{:-<119}'.format(''))
 print('Choose a game from the below using the ''play'' command. type ''quit'' to quit, or ''help'' for supported commands')
 print('{:-<119}'.format(''))
 
+def load_config(path='config.yaml'):
+    with open(path, 'r') as f:
+        config = yaml.safe_load(f)
+    return config
 
 def load_game_list(path='supported_games.yaml'):
     
-    with open('supported_games.yaml', 'r') as f:  
+    with open(path, 'r') as f:  
         game_data = yaml.safe_load(f)
         return {next(iter(d)): d[next(iter(d))] for d in game_data['board_games']}
 
@@ -83,7 +88,7 @@ while True:
                 break
             else:
                 print('Please enter ''play'' followed by the game id.')
-        # case 'expn':
+        # case 'expn': for expansions TODO
         case 'invalid_input':
             pass
         case _:
@@ -111,17 +116,29 @@ for i in range(len(playing_game)):
     print('-', end='')
 print()
 
-while True:
-    print(f'Enter {BG.player_type.capitalize()} name: ', end='')
-    name = input()
-    if not name.strip():
-        break
-    else:
-        BG.add_player(name)
+config = load_config()
+savefile = game.get('save_file')
+#Create the directory if it doesn't exist
+savedir = Path.home() / config['save_path'].lstrip('\\/') / savefile
 
-# Just some spacing to make the output look better
-print('\n')
+savedir.parent.mkdir(parents=True, exist_ok=True)
 
-for i, player in enumerate(BG.get_player_order(), start=1):
-    print(f'Player {i} is {player}')
+
+
+if savedir.is_file():
+    print('exists')
+else:
+    with savedir.open('w') as f:
+        yaml.safe_dump({},f)
+
+print(savedir)
+print(savedir.is_file())
+
+
+    
+
+
+# Hand off the rest to the individual board game class, plus the interface that is 
+BG.setup_game(savedir)
+
 
