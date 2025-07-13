@@ -1,40 +1,40 @@
 board_games:
-  - id: gbg
-    name: "Board Game"
-    class: "BoardGame"
-    module: "games.base"
-    description: "Generic board game template. Meant to be subclassed."
-    expansions: []
+  - gbg:
+      name: "Board Game"
+      class: "BoardGame"
+      module: "games.generic_board_game"
+      description: "Generic board game template. Used for games that do not have a specific implementation. Provides player order and ability to enter scores. "
+      expansions: []
 
-  - id: cav
-    name: "Caverna"
-    class: "Caverna"
-    module: "games.caverna"
-    description: "Caverna: The Cave Farmers is a worker-placement game by Uwe Rosenberg."
-    expansions:
-      - "The Forgotten Folk"
+  - cav:
+      name: "Caverna"
+      class: "Caverna"
+      module: "games.caverna"
+      description: "Caverna: The Cave Farmers is a worker-placement game by Uwe Rosenberg."
+      expansions:
+        - "The Forgotten Folk"
 
-  - id: cav_ff
-    name: "Caverna: The Forgotten Folk"
-    class: "Caverna_FF"
-    module: "games.caverna_ff"
-    description: "An expansion to Caverna adding asymmetric player powers and fantasy races."
-    base_game: "caverna"
-    expansions: []
+  - cav_ff:
+      name: "Caverna: The Forgotten Folk"
+      class: "Caverna_FF"
+      module: "games.caverna_ff"
+      description: "An expansion to Caverna adding asymmetric player powers and fantasy races."
+      base_game: "caverna"
+      expansions: []
 
-  - id: win
-    name: "Wingspan"
-    class: "Wingspan"
-    module: "games.wingspan"
-    description: "A game about birds"
-    expansions: 
-      - "Asia"
-      - "Oceania"
-      - "Europe"
+  - win:
+      name: "Wingspan"
+      class: "Wingspan"
+      module: "games.wingspan"
+      description: "A game about birds"
+      expansions: 
+        - "Asia"
+        - "Oceania"
+        - "Europe"
 
-  - id: gai
-    name: "Gaia Project"
-    class: "Wingspan"
-    module: "games.gaia_project"
-    description: "A game about space exploration"
-    expansions: []
+  - gai:
+      name: "Gaia Project"
+      class: "Wingspan"
+      module: "games.gaia_project"
+      description: "A game about space exploration"
+      expansions: []
